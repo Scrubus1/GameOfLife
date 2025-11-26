@@ -5,6 +5,9 @@ public class Grid {
         this.grid = new Cell[width][length];
     }
 
+    /** 
+     * Iterates through the empty grid and populate it with Cell objects
+     */
     public void populateGrid() {
         for (int y = 0; y < 20; y++) {
             for (int x = 0; x < 20; x++) {
@@ -13,35 +16,63 @@ public class Grid {
         }
     }
     
+    /** 
+     * Iterates through the populated grid and changes the state of cells to alive or dead
+     * according to the conditions set by Conway's Game Of Life.
+     */
     public void nextGeneration() {
-        int neighbors;
         for (int y = 0; y < 20; y++) {
             for (int x = 0; x < 20; x++) {
-                neighbors = 0;
-                if (y == 0) {
-
-                }
-                for (int i = (y == 0 ? 0 : -1); i <= (y == 19 ? 0 : 1); i++) {
-                    for (int t = (x == 0 ? 0 : -1); t <= (x == 19 ? 0 : 1); t++) {
-                        if (grid[y+i][x+t].status == 1) {
-                            neighbors += 1;
-                        }
-                    }
-                }
-
-                if (grid[y][x].status == 1 && (neighbors < 2 || neighbors > 3)) {
-                    System.out.println(neighbors);
-                    grid[y][x].status = 0;
-                } 
-                else if (grid[y][x].status == 0 && neighbors == 3 ) {
-                    grid[y][x].status = 1;
-                }
+                grid[y][x].state = changeState(y, x, countNeighbors(y, x)); 
             }
         }
     }
 
+    /**
+     * Iterates through the neighbor (diagonal & orthogonal) cells and counts alive neighbors
+     * @param y Index of row array within grid
+     * @param x Index of element within row array
+     * @return Returns the number of alive neighbors
+     */
+    public int countNeighbors(int y, int x) {
+        int neighbors = 0;
+        // Searches adjacent cells, checks their state, and keeps count of how many neighbors are alive
+        // Uses ternary operators to exclude search values outside of the grid 
+        for (int searchRow = (y == 0 ? 0 : -1); searchRow <= (y == 19 ? 0 : 1); searchRow++) {
+            for (int searchCol = (x == 0 ? 0 : -1); searchCol <= (x == 19 ? 0 : 1); searchCol++) {
+                if (grid[y+searchRow][x+searchCol].state == 1 && (searchRow != 0 || searchCol != 0)) {
+                    neighbors += 1;
+                }
+            }
+        }
+        return neighbors;
+    }
+
+
+    /**
+     * Checks the specififed cell for its state and determines if it should be alive or dead according to the rules of the Game of Life
+     * @param y Index of row array within grid
+     * @param x Index of element within row array
+     * @param neighbors Number of alive neighbors
+     * @return Returns the desired state of the cell specified
+     */
+    public int changeState(int y, int x, int neighbors) {
+        if (grid[y][x].state == 1 && (neighbors == 2 || neighbors == 3)) {
+            return 1;
+        }
+        else if (grid[y][x].state == 1 && (neighbors < 2 || neighbors > 3)) {
+            return 0;
+        } 
+        else if (grid[y][x].state == 0 && neighbors == 3 ) {
+            return 1;
+        }
+        else {
+            return 0;
+        }
+    }
+
     public void seedGrid(int y, int x) {
-        grid[y][x].status = 1;
+        grid[y][x].state = 1;
     }
 
 
@@ -60,10 +91,12 @@ public class Grid {
     public static void main(String[] args) {
         Grid board = new Grid(20, 20);
         board.populateGrid();
-        board.seedGrid(5, 5);
-        board.seedGrid(5, 6);
-        board.seedGrid(6, 5);
+        board.seedGrid(0, 0);
+        board.seedGrid(0, 19);
+        board.seedGrid(1, 0);
         
+        System.out.println(board);
+        board.nextGeneration();
         System.out.println(board);
         board.nextGeneration();
         System.out.println(board);

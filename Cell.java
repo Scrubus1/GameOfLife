@@ -1,14 +1,14 @@
 public class Cell {
 
-    int status;
+    int state;
 
     public Cell() {
-        status = 0;
+        state = 0;
     }
 
     @Override
     public String toString() {
-        return String.valueOf(status);
+        return String.valueOf(state);
     }
     
 }
