@@ -8,7 +8,7 @@ public class Cell {
 
     @Override
     public String toString() {
-        return String.valueOf(state);
+        return state == 0 ? "." : String.valueOf(state);
     }
     
 }
