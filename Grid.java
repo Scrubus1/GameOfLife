@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public class Grid {
     Cell[][] grid;
 
@@ -23,7 +25,7 @@ public class Grid {
     public void nextGeneration() {
         for (int y = 0; y < 20; y++) {
             for (int x = 0; x < 20; x++) {
-                grid[y][x].state = changeState(y, x, countNeighbors(y, x)); 
+                grid[y][x].isAlive = changeState(y, x, countNeighbors(y, x)); 
             }
         }
     }
@@ -34,20 +36,19 @@ public class Grid {
      * @param x Index of element within row array
      * @return Returns the number of alive neighbors
      */
-    public int countNeighbors(int y, int x) {
-        int neighbors = 0;
+    public ArrayList<Cell> countNeighbors(int y, int x) {
+        ArrayList<Cell> neighbors = new ArrayList<>();
         // Searches adjacent cells, checks their state, and keeps count of how many neighbors are alive
         // Uses ternary operators to exclude search values outside of the grid 
         for (int searchRow = (y == 0 ? 0 : -1); searchRow <= (y == 19 ? 0 : 1); searchRow++) {
             for (int searchCol = (x == 0 ? 0 : -1); searchCol <= (x == 19 ? 0 : 1); searchCol++) {
-                if (grid[y+searchRow][x+searchCol].state == 1 && (searchRow != 0 || searchCol != 0)) {
-                    neighbors += 1;
+                if (grid[y+searchRow][x+searchCol].isAlive && (searchRow != 0 || searchCol != 0)) {
+                    neighbors.add(grid[y + searchRow][x + searchCol]);
                 }
             }
         }
         return neighbors;
     }
-
 
     /**
      * Checks the specififed cell for its state and determines if it should be alive or dead according to the rules of the Game of Life
@@ -56,25 +57,46 @@ public class Grid {
      * @param neighbors Number of alive neighbors
      * @return Returns the desired state of the cell specified
      */
-    public int changeState(int y, int x, int neighbors) {
-        if (grid[y][x].state == 1 && (neighbors == 2 || neighbors == 3)) {
-            return 1;
+    public boolean changeState(int y, int x, ArrayList<Cell> neighbors) {
+        int neighborCount = neighbors.size();
+        if (grid[y][x].isAlive && (neighborCount == 2 || neighborCount == 3)) {
+            return true;
         }
-        else if (grid[y][x].state == 1 && (neighbors < 2 || neighbors > 3)) {
-            return 0;
+        else if (grid[y][x].isAlive && (neighborCount < 2 || neighborCount > 3)) {
+            return false;
         } 
-        else if (grid[y][x].state == 0 && neighbors == 3 ) {
-            return 1;
+        else if (grid[y][x].isAlive == false && neighborCount == 3 ) {
+            neighbors.remove((int) (Math.random() * 3));
+            grid[y][x].dna.matchPairs(neighbors.get(0).dna, neighbors.get(1).dna);
+            return true;
         }
         else {
-            return 0;
+            return false;
         }
     }
 
-    public void seedGrid(int y, int x) {
-        grid[y][x].state = 1;
+    public void seedGrid() {
+        for (int y = 0; y < 20; y++) {
+            for (int x = 0; x < 20; x++) {
+                if ((int) (Math.random() * 7) == 0) {
+                    grid[y][x].isAlive = true;
+                }
+            }
+        }
     }
 
+    public int cellsAlive() {
+        int count = 0;
+        for (int y = 0; y < 20; y++) {
+            for (int x = 0; x < 10; x++) {
+                if (grid[y][x].isAlive) {
+                    count++;
+                }
+            }
+            
+        }
+        return count;
+    }
 
     @Override
     public String toString() {
@@ -87,19 +109,4 @@ public class Grid {
         }
         return builder.toString();
     }
-
-    public static void main(String[] args) {
-        Grid board = new Grid(20, 20);
-        board.populateGrid();
-        board.seedGrid(0, 0);
-        board.seedGrid(0, 19);
-        board.seedGrid(1, 0);
-        
-        System.out.println(board);
-        board.nextGeneration();
-        System.out.println(board);
-        board.nextGeneration();
-        System.out.println(board);
-    }
-
 }
