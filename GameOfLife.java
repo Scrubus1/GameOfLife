@@ -1,5 +1,5 @@
 public class GameOfLife {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         Grid board = new Grid(20, 20);
         board.populateGrid();
         board.seedGrid();
@@ -8,6 +8,7 @@ public class GameOfLife {
         while (board.cellsAlive() > 0) { 
             board.nextGeneration();
             System.out.println(board);
+            Thread.sleep(500);
         }
     }
 }
