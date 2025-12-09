@@ -1,6 +1,9 @@
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Representation of each cell within the grid
+ */
 public class Cell {
 
     boolean isAlive;
@@ -19,14 +22,19 @@ public class Cell {
         "ctag"
     };
 
+
     public Cell() {
         isAlive = false;
         dna = new Dna();
         patternCount = this.checkPatterns();
     }
 
+    /**
+     * Checks the DNA sequence for patterns that make characteristics
+     * @return Number of characteristics found
+     */
     public final int checkPatterns() {
-        String dnaString = new String(dna.baseArray); // try making this an attribute later
+        String dnaString = new String(dna.baseArray);
         int count = 0;
         for (String pattern: patterns) {
             Pattern p = Pattern.compile(pattern);
@@ -39,6 +47,7 @@ public class Cell {
 
         return count;
     }
+
 
     @Override
     public String toString() {

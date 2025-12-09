@@ -1,3 +1,6 @@
+/**
+ * DNA representation 
+ */
 public class Dna {
     char[] baseArray;
     char[] possibleBases = {'a', 't', 'c', 'g'};
@@ -9,6 +12,11 @@ public class Dna {
         }
     }
 
+    /**
+     * Matches the DNA sequences of two parent Dna objects a - t, c - g and generates a random base if no match is found
+     * @param parentA Dna object that will be inherited from if successful match
+     * @param parentB Dna object that will not be inherited from if successful match
+     */
     public void matchPairs(Dna parentA, Dna parentB) {
         for (int i = 0; i < 30; i++) {
             if (parentA.baseArray[i] == 'a' && parentB.baseArray[29 - i] == 't') {

@@ -2,17 +2,21 @@ import java.util.ArrayList;
 
 public class Grid {
     Cell[][] grid;
+    int width;
+    int length;
 
     public Grid(int width, int length) {
         this.grid = new Cell[width][length];
+        this.length = length;
+        this.width = width;
     }
 
     /** 
-     * Iterates through the empty grid and populate it with Cell objects
+     * Iterates through the empty grid and populates it with Cell objects
      */
     public void populateGrid() {
-        for (int y = 0; y < 20; y++) {
-            for (int x = 0; x < 20; x++) {
+        for (int y = 0; y < length; y++) {
+            for (int x = 0; x < width; x++) {
                 grid[y][x] = new Cell();
             }
         }
@@ -23,8 +27,8 @@ public class Grid {
      * according to the conditions set by Conway's Game Of Life.
      */
     public void nextGeneration() {
-        for (int y = 0; y < 20; y++) {
-            for (int x = 0; x < 20; x++) {
+        for (int y = 0; y < length; y++) {
+            for (int x = 0; x < width; x++) {
                 grid[y][x].isAlive = changeState(y, x, countNeighbors(y, x)); 
             }
         }
@@ -40,8 +44,8 @@ public class Grid {
         ArrayList<Cell> neighbors = new ArrayList<>();
         // Searches adjacent cells, checks their state, and keeps count of how many neighbors are alive
         // Uses ternary operators to exclude search values outside of the grid 
-        for (int searchRow = (y == 0 ? 0 : -1); searchRow <= (y == 19 ? 0 : 1); searchRow++) {
-            for (int searchCol = (x == 0 ? 0 : -1); searchCol <= (x == 19 ? 0 : 1); searchCol++) {
+        for (int searchRow = (y == 0 ? 0 : -1); searchRow <= (y == (length - 1) ? 0 : 1); searchRow++) {
+            for (int searchCol = (x == 0 ? 0 : -1); searchCol <= (x == (width - 1) ? 0 : 1); searchCol++) {
                 if (grid[y+searchRow][x+searchCol].isAlive && (searchRow != 0 || searchCol != 0)) {
                     neighbors.add(grid[y + searchRow][x + searchCol]);
                 }
@@ -76,8 +80,8 @@ public class Grid {
     }
 
     public void seedGrid() {
-        for (int y = 0; y < 20; y++) {
-            for (int x = 0; x < 20; x++) {
+        for (int y = 0; y < length; y++) {
+            for (int x = 0; x < width; x++) {
                 if ((int) (Math.random() * 7) == 0) {
                     grid[y][x].isAlive = true;
                 }
@@ -87,8 +91,8 @@ public class Grid {
 
     public int cellsAlive() {
         int count = 0;
-        for (int y = 0; y < 20; y++) {
-            for (int x = 0; x < 10; x++) {
+        for (int y = 0; y < length; y++) {
+            for (int x = 0; x < width; x++) {
                 if (grid[y][x].isAlive) {
                     count++;
                 }
